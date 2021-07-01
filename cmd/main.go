@@ -58,6 +58,7 @@ func visitStarPage(name string) {
 		star := strings.TrimSpace(startag.Text())
 
 		fmt.Printf("repository=%s, desc=%s, star=%s\n", link, desc, star)
+		// TODO: buffer 优化
 		file.WriteString(fmt.Sprintf("%s,\"%s\",\"%s\"\n", GithubUrl+link, desc, star))
 	})
 	c.OnHTML(".paginate-container", func(e *colly.HTMLElement) {
@@ -90,7 +91,7 @@ func visitStarPage(name string) {
 	c.Wait()
 }
 
-// todo: 抽象---------------------------------------------------------
+// TODO: 抽象---------------------------------------------------------
 type Repo struct {
 	Link string
 	Desc string
