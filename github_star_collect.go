@@ -68,9 +68,7 @@ func CollectGithubStarRepo(c *RCollector, accountName string) ([]RepoInfo, error
 		}
 	})
 	c.c.OnRequest(func(r *colly.Request) {
-		fmt.Println("---------------------------------")
 		fmt.Println("Visiting", r.URL.String())
-		fmt.Println("---------------------------------")
 	})
 
 	err = c.c.Visit(target)
@@ -85,11 +83,8 @@ func CollectGithubStarRepo(c *RCollector, accountName string) ([]RepoInfo, error
 	return repos, nil
 }
 
-func OutputToCSV(repos []RepoInfo, account string) error {
-	filename := fmt.Sprintf("%s-star-repos.csv", account)
-	// TODO: 校验是否存在，防止误删
-	_ = os.Remove(filename)
-	file, err := os.Create(filename)
+func OutputToCSV(repos []RepoInfo, account string, filepath string) error {
+	file, err := os.Create(filepath)
 	if err != nil {
 		return err
 	}
