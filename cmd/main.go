@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/Enan01/rcollect"
@@ -20,6 +19,7 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		account, _ := cmd.Flags().GetString("account")
 		output, _ := cmd.Flags().GetString("output")
+		_proxy, _ := cmd.Flags().GetString("proxy")
 		if output[len(output)-1] == '/' {
 			output = output[:len(output)-1]
 		}
@@ -41,12 +41,20 @@ var rootCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		// TODO: proxy 调整为命令行参数
-		rp, err := proxy.RoundRobinProxySwitcher("socks5://127.0.0.1:7890")
-		if err != nil {
-			log.Fatal(err)
+		options := make([]rcollect.SetOption, 0)
+		options = append(options, rcollect.WithAsync(true))
+		if len(_proxy) > 0 {
+			fmt.Printf("proxy: %s\n", _proxy)
+			rp, err := proxy.RoundRobinProxySwitcher(_proxy)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			options = append(options, rcollect.WithProxy(rp))
 		}
-		collector := rcollect.NewRCollector(rcollect.WithProxy(rp), rcollect.WithAsync(true))
+
+		collector := rcollect.NewRCollector(options...)
+
 		githubAccount := account
 
 		repos, err := rcollect.CollectGithubStarRepo(collector, githubAccount)
@@ -66,6 +74,7 @@ var rootCmd = &cobra.Command{
 func init() {
 	rootCmd.Flags().StringP("account", "a", "", "github account")
 	rootCmd.Flags().StringP("output", "o", "./", "file output path")
+	rootCmd.Flags().StringP("proxy", "p", "", "set proxy, e.g. socks5://127.0.0.1:8888")
 }
 
 func Execute() {
