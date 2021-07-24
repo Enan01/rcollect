@@ -3,3 +3,7 @@ go.sum
 *.csv
 
 rcollect
+
+__debug_bin
+
+.vscode
