@@ -70,6 +70,10 @@ func CollectGithubStarRepo(c *RCollector, accountName string) ([]RepoInfo, error
 	c.c.OnRequest(func(r *colly.Request) {
 		fmt.Println("Visiting", r.URL.String())
 	})
+	c.c.OnError(func(r *colly.Response, e error) {
+		fmt.Println("err=", e)
+		os.Exit(1)
+	})
 
 	err = c.c.Visit(target)
 	if err != nil {
