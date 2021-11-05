@@ -29,14 +29,14 @@ func CollectGithubStarRepo(c *RCollector, accountName string) ([]RepoInfo, error
 	)
 
 	target := fmt.Sprintf(GithubStarPageUrl, accountName)
-	c.c.OnHTML(".col-12.d-block.width-full.py-4.border-bottom.color-border-secondary", func(e *colly.HTMLElement) {
+	c.c.OnHTML(".col-12.d-block.width-full.py-4.border-bottom.color-border-muted", func(e *colly.HTMLElement) {
 		linktag := e.DOM.Find(".d-inline-block.mb-1").Find("div>h3>a")
 		link, _ := linktag.Attr("href")
 
 		desctag := e.DOM.Find("div[class=py-1]").Find("div>p")
 		desc := strings.TrimSpace(desctag.Text())
 
-		infotag := e.DOM.Find(".f6.color-text-secondary.mt-2")
+		infotag := e.DOM.Find(".f6.color-fg-muted.mt-2")
 		startag := infotag.Find("div>a").First()
 		star, _ := strconv.Atoi(strings.ReplaceAll(strings.TrimSpace(startag.Text()), ",", ""))
 
