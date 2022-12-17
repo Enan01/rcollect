@@ -101,6 +101,8 @@ func OutputToCSV(repos []RepoInfo, account string, filepath string) error {
 
 	bufwriter.WriteString("\xEF\xBB\xBF") // 写入UTF-8 BOM，避免使用Microsoft Excel打开乱码
 
+	bufwriter.WriteString("link,desc,star,update\n")
+
 	for _, v := range repos {
 		_, err := bufwriter.WriteString(fmt.Sprintf("%s,\"%s\",\"%d\",%s\n", GithubUrl+v.Link, v.Desc, v.Star, v.UpdateTime))
 		if err != nil {
